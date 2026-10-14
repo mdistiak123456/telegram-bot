@@ -180,9 +180,10 @@ Rule 100: Master Rule 100 (Real Edge vs Holy Grail): Edge is risk management & d
 """
 
 def ask_gemini(prompt: str) -> str:
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_KEY}"
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
     headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-goog-api-key": GEMINI_KEY
     }
     payload = {
         "contents": [
@@ -193,14 +194,15 @@ def ask_gemini(prompt: str) -> str:
         ]
     }
     try:
-        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        response = requests.post(url, headers=headers, json=payload)
         data = response.json()
         if response.status_code == 200:
             return data["candidates"][0]["content"]["parts"][0]["text"]
         else:
-            return f"API Error: {data.get('error', {}).get('message', response.text)}"
+            return f"API Error: {data.get('error', {}).get('message', 'Unknown error')}"
     except Exception as e:
-        return f"Request Error: {str(e)}"
+        return f"Error: {str(e)}"
+        
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
