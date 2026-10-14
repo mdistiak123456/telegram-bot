@@ -184,11 +184,6 @@ def ask_gemini(prompt: str) -> str:
     except Exception as e:
         return f"Request Error: {str(e)}"
 
-        else:
-            error_msg = data.get("error", {}).get("message", response.text)
-            return f"API Error: {error_msg}"
-    except Exception as e:
-        return f"Request Error: {str(e)}"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
