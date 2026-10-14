@@ -183,7 +183,7 @@ def ask_gemini(prompt: str) -> str:
     url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
     headers = {
         "Content-Type": "application/json",
-        "x-goog-api-key": GEMINI_KEY
+        "x-goog-api-key": "AQ.Ab8RN6Lq2N5xRRJh0PkECYD2Bg8ghwYHe5Oh6GjSE7SoY_YnLA"
     }
     payload = {
         "contents": [
@@ -202,8 +202,6 @@ def ask_gemini(prompt: str) -> str:
             return f"API Error: {data.get('error', {}).get('message', 'Unknown error')}"
     except Exception as e:
         return f"Error: {str(e)}"
-        
-
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
