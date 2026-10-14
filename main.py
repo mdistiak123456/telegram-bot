@@ -1,3 +1,22 @@
+import os
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import requests
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+
+# Render को शांत रखने के लिए पोर्ट
+class SimpleServer(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK")
+
+def run():
+    server = HTTPServer(("0.0.0.0", int(os.environ.get("PORT", 10000))), SimpleServer)
+    server.serve_forever()
+
+threading.Thread(target=run, daemon=True).start()
 
 import os
 import logging
