@@ -181,7 +181,7 @@ Rule 100: Master Rule 100 (Real Edge vs Holy Grail): Edge is risk management & d
 
 def ask_gemini(prompt: str) -> str:
     api_key = "AQ.Ab8RN6IRb4IopbHTw-KRw80IQDYxz48hOhm2tHxRR109GhGM-g"
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
     headers = {
         "Content-Type": "application/json"
     }
