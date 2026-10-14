@@ -8,7 +8,7 @@ import google.generativeai as genai
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 TELEGRAM_TOKEN = "8950301339:AAEIH6GgLXWtGjCocZfRVoSimD91T-VzHvY"
-GEMINI_KEY = "AQ.Ab8RN6KWT1H7iHRZOWBQ"
+GEMINI_KEY = "AQ.Ab8RN6Kl4YuTvcR2xbNpaA0u-Mfx6eCAVWVr0uSbLyWxxAkrMw"
 
 SYSTEM_INSTRUCTION = """
 You are the official Gold Master Multi-Asset AI Support & Risk Management Assistant for MetaTrader 5 (MT5).
