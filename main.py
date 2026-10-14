@@ -178,10 +178,8 @@ Rule 98: Master Rule 98 (One-Way Directional Logic): Strictly no hedging.
 Rule 99: Master Rule 99 (Account Licensing): EA locked to trader's MT5 account login.
 Rule 100: Master Rule 100 (Real Edge vs Holy Grail): Edge is risk management & disciplined execution.
 """
-
 def ask_gemini(prompt: str) -> str:
-    api_key = "AQ.Ab8RN6IRb4IopbHTw-KRw80IQDYxz48hOhm2tHxRR109GhGM-g"
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={GEMINI_KEY}"
     headers = {
         "Content-Type": "application/json"
     }
@@ -199,7 +197,7 @@ def ask_gemini(prompt: str) -> str:
         if response.status_code == 200:
             return data["candidates"][0]["content"]["parts"][0]["text"]
         else:
-            return f"API Error: {data.get('error', {}).get('message', 'Unknown error')}"
+            return f"API Error: {data.get('error', {}).get('message', str(data))}"
     except Exception as e:
         return f"Error: {str(e)}"
 
