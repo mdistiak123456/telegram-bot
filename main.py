@@ -169,7 +169,7 @@ def ask_gemini(prompt: str) -> str:
         "contents": [
             {
                 "role": "user",
-                "parts": [{"text": f"System Instructions:\n{SYSTEM_INSTRUCTIONS}\n\nUser Question:\n{prompt}"}]
+                "parts": [{"text": f"System Instructions:\n{SYSTEM_INSTRUCTION}\n\nUser Question:\n{prompt}"}]
             }
         ]
     }
