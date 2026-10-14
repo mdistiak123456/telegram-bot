@@ -9,8 +9,8 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
-TELEGRAM_TOKEN = "8950301339:AAE6CupCi3ze-emATyT7PBc3tjvBUXvoWaU"
-GEMINI_KEY = "AQ.Ab8RN6Kl4YuTvcR2xbNpaA0u-Mfx6eCAVWVr0uSbLyWxxAkrMw"
+TELEGRAM_TOKEN = "8950301339:AAHhaMne1-kVQN26vLlS07QKoUMnF4J2-yo"
+GEMINI_KEY = "AQ.Ab8RN6Lq2N5xRRJh0PkECYD2Bg8ghwYHe5Oh6GJSE7SoY_YnLA"
 SYSTEM_INSTRUCTION = """
 You are the official Gold Master Multi-Asset MT5 Strategy & Risk Management AI Assistant.
 Answer strictly in Hindi/Hinglish with accurate technical terms.
@@ -161,13 +161,16 @@ Rule 100: Master Rule 100 (Real Edge vs Holy Grail): Edge is risk management & d
 """
 
 def ask_gemini(prompt: str) -> str:
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_KEY}"
-    headers = {"Content-Type": "application/json"}
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+    headers = {
+        "Content-Type": "application/json",
+        "x-goog-api-key": GEMINI_KEY
+    }
     payload = {
         "contents": [
             {
                 "role": "user",
-                "parts": [{"text": f"System Guidelines:\n{SYSTEM_INSTRUCTION}\n\nUser Question: {prompt}"}]
+                "parts": [{"text": f"System Instructions:\n{SYSTEM_INSTRUCTION}\n\nUser Question: {prompt}"}]
             }
         ]
     }
@@ -176,6 +179,11 @@ def ask_gemini(prompt: str) -> str:
         data = response.json()
         if response.status_code == 200:
             return data["candidates"][0]["content"]["parts"][0]["text"]
+        else:
+            return f"API Error: {data.get('error', {}).get('message', response.text)}"
+    except Exception as e:
+        return f"Request Error: {str(e)}"
+
         else:
             error_msg = data.get("error", {}).get("message", response.text)
             return f"API Error: {error_msg}"
