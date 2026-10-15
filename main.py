@@ -29,7 +29,6 @@ logging.basicConfig(
     level=logging.INFO
 )
 TELEGRAM_TOKEN = "8950301339:AAHhaMne1-kVQN26vLlS07QKoUMnF4J2-yo"
-GEMINI_KEY = "AQ.Ab8RN6IRb4IopbHTw-KRw80IQDYxz48hOhm2tHxRR109GhGM-g"
 SYSTEM_INSTRUCTION = """
 You are the official Gold Master Multi-Asset MT5 Strategy & Risk Management AI Assistant.
 Answer strictly in Hindi/Hinglish with accurate technical terms.
