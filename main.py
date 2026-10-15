@@ -1,4 +1,3 @@
-
 import os
 import re
 import requests
@@ -12,12 +11,12 @@ from telegram.ext import (
     filters
 )
 
-# Groq API Configuration
+# Render Environment Variables (पुराने नाम बिल्कुल वैसे ही रखे हैं)
 API_KEY = os.environ.get("GEMINI_KEY", "").strip()
 MODEL_NAME = "openai/gpt-oss-120b"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
-# 28-Level VIP Matrix Reference Database
+# 28-Level VIP Matrix Reference
 VIP_MATRIX = """
 VIP 1 ($100–$249 | 5% | ~$5-$12.5): Gold: —/0.01/— | Oil: 0.01/0.01/— | Silver: —/0.01/— | BTC: 0.01/0.01/— | ETH: 0.09/0.15/0.05
 VIP 2 ($250–$499 | 5% | $12.5-$25): Gold: —/0.01/0.01 | Oil: —/0.02/0.01 | Silver: —/0.01/0.01 | BTC: 0.01/0.02/0.01 | ETH: 0.22/0.37/0.15
@@ -61,9 +60,7 @@ KNOWLEDGE_RULES = """
 - State Lock Rule: Depositing or withdrawing mid-trade will not alter active lots. Upgrades apply to the next fresh cycle.
 """
 
-# In-Memory Storage for User State & History
 user_sessions = {}
-# Structure: user_id -> {"balance": 10000, "lang": "hi", "history": []}
 
 def get_system_prompt(lang: str) -> str:
     if lang == "en":
@@ -137,13 +134,12 @@ def ask_groq(user_id: int, user_message: str) -> str:
     except Exception as e:
         return f"Error: {str(e)}"
 
-# Extract numeric balance from text if present
 def extract_balance(text: str):
     clean = text.replace(",", "").replace("$", "").replace("₹", "").strip()
     match = re.search(r'\b\d+(\.\d+)?\b', clean)
     if match:
         val = float(match.group())
-        if val >= 50:  # Minimum valid balance check
+        if val >= 50:
             return val
     return None
 
@@ -172,7 +168,6 @@ async def language_button_click(update: Update, context: ContextTypes.DEFAULT_TY
         session["lang"] = chosen_lang
         bal = session.get("balance", 5000)
 
-        # Trigger initial response in chosen language
         prompt = f"My balance is ${bal}. Confirm my VIP tier, fixed risk percentage, and dollar risk budget. Then ask which asset pair I want to trade."
         response = ask_groq(user_id, prompt)
         await query.edit_message_text(response)
@@ -182,12 +177,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text.strip()
     session = user_sessions.setdefault(user_id, {"balance": None, "lang": "hi", "history": []})
 
-    # Check if user just sent a fresh balance number
     detected_bal = extract_balance(user_text)
     if detected_bal and session["balance"] is None:
         session["balance"] = detected_bal
         
-        # Present Language Selection Buttons
         keyboard = [
             [
                 InlineKeyboardButton("🇮🇳 हिंदी / देसी स्टाइल", callback_data="lang_hi"),
@@ -203,14 +196,14 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(prompt_msg, reply_markup=reply_markup, parse_mode="Markdown")
         return
 
-    # Regular chat / Pair query / Rule questions
     response = ask_groq(user_id, user_text)
     await update.message.reply_text(response)
 
 if __name__ == "__main__":
-    bot_token = os.environ.get("BOT_TOKEN", "").strip()
+    # पुराने दोनों में से जो भी नाम Render पर मौजूद होगा, यह अपने आप उठा लेगा
+    bot_token = (os.environ.get("TELEGRAM_TOKEN") or os.environ.get("BOT_TOKEN") or "").strip()
     if not bot_token:
-        print("BOT_TOKEN not found!")
+        print("TELEGRAM_TOKEN not found!")
         exit(1)
 
     app = ApplicationBuilder().token(bot_token).build()
@@ -220,4 +213,3 @@ if __name__ == "__main__":
 
     print("MD Istiak Trader Support Bot is running...")
     app.run_polling()
-    
