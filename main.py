@@ -179,10 +179,9 @@ Rule 99: Master Rule 99 (Account Licensing): EA locked to trader's MT5 account l
 Rule 100: Master Rule 100 (Real Edge vs Holy Grail): Edge is risk management & disciplined execution.
 """
 def ask_gemini(prompt: str) -> str:
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={GEMINI_KEY}"
-    headers = {
-        "Content-Type": "application/json"
-    }
+    key = os.environ.get("GEMINI_KEY", "").strip()
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
+    headers = {"Content-Type": "application/json"}
     payload = {
         "contents": [
             {
