@@ -188,7 +188,8 @@ def ask_gemini(prompt: str) -> str:
         "Content-Type": "application/json"
     }
     payload = {
-        "model": "llama-3.1-8b-instant",
+        "model": "llama-3.3-70b-versatile",
+        
         "messages": [
             {"role": "system", "content": SYSTEM_INSTRUCTION},
             {"role": "user", "content": prompt}
