@@ -188,7 +188,7 @@ def ask_gemini(prompt: str) -> str:
         "Content-Type": "application/json"
     }
     payload = {
-        "model": "openai/gpt-oss-120b",
+        MODEL_NAME = "llama-3.3-70b-versatile"
         
         "messages": [
             {"role": "system", "content": SYSTEM_INSTRUCTION},
