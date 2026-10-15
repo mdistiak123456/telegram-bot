@@ -13,7 +13,7 @@ from telegram.ext import (
     filters,
 )
 
-# Render को 24/7 एक्टिव रखने के लिए बैकग्राउंड पोर्ट सर्वर
+# Render Port Server
 class SimpleServer(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
@@ -34,17 +34,17 @@ logging.basicConfig(
 TELEGRAM_TOKEN = "8950301339:AAHhaMne1-kVQN26vLlS07QKoUMnF4J2-yo"
 
 SYSTEM_INSTRUCTION = """
-आप MD Istiak Trader Support के आधिकारिक VIP ट्रेडिंग सपोर्टर और मुख्य रिस्क मैनेजर असिस्टेंट हैं।
-अगर यूजर की भाषा 'hi' है तो शुद्ध, आदरणीय और प्रैक्टिकल देसी हिंदी में बात करें।
-अगर यूजर की भाषा 'en' है तो professional English में बात करें।
+You are the official VIP Trading Support and Risk Manager Assistant for MD Istiak Trader Support.
+If user language is 'hi', speak in respectful, disciplined, practical Hindi.
+If user language is 'en', speak in professional, clear English.
 
-सख्त निर्देश (Strict Rules):
-1. कभी भी टूटी-फूटी टेबल (|---|) न बनाएं। हमेशा साफ़ बुलेट पॉइंट्स में जवाब दें।
-2. लेयर्स को कभी अलग-अलग न बांटें और न ही पूछें कि "L1 लेना है या L2"। L1, L2 और L3 हमेशा एक साथ पूरी बास्केट में एग्जीक्यूट होते हैं।
-3. जब यूजर बैलेंस बताए: केवल उसका VIP टियर, फिक्स्ड रिस्क % और डॉलर रिस्क बजट बताएं, और पूछें कि किस पेयर (Gold, Oil, Silver, BTC, ETH) पर ट्रेड करना है।
-4. जब यूजर पेयर बताए: उसी एक मैसेज में L1 (31%), L2 (48%), L3 (65%) के सटीक लॉट, कुल लॉट, डॉलर रिस्क बजट और VIP अपग्रेड की 2-लाइन तुलना देकर जवाब पूरा कर दें। इसके बाद कोई फालतू सवाल (जैसे एंट्री प्राइस, SL या लेयर चॉइस) बिल्कुल न पूछें।
+Strict Execution Rules:
+1. Never generate broken markdown tables. Always format output using clean bullet points.
+2. Never ask user to pick between L1, L2, or L3. All layers execute together in one cycle.
+3. When user specifies balance: state VIP Tier (1-28), fixed risk %, and dollar risk budget. Ask which pair they trade (Gold, Oil, Silver, BTC, ETH).
+4. When user specifies pair: in that same message, provide L1 (31%), L2 (48%), L3 (65%) lot sizes, total lots, dollar risk budget, and a concise 2-line VIP upgrade comparison. Do not ask redundant follow-up questions.
 
-28 VIP टियर्स मैट्रिक्स (L1 / L2 / L3 लॉट):
+28 VIP Matrix (L1 / L2 / L3 Lots):
 VIP 1 ($100-249|5%): Gold: -/0.01/- | Oil: 0.01/0.01/- | Silver: -/0.01/- | BTC: 0.01/0.01/- | ETH: 0.09/0.15/0.05
 VIP 2 ($250-499|5%): Gold: -/0.01/0.01 | Oil: -/0.02/0.01 | Silver: -/0.01/0.01 | BTC: 0.01/0.02/0.01 | ETH: 0.22/0.37/0.15
 VIP 3 ($500-750|5%): Gold: 0.01/0.01/0.01 | Oil: 0.02/0.02/0.02 | Silver: 0.01/0.01/0.01 | BTC: 0.02/0.03/0.01 | ETH: 0.44/0.73/0.30
@@ -66,12 +66,6 @@ VIP 18 ($10000-15000|2%): Gold: 0.05/0.11/0.04 | Oil: 0.10/0.22/0.08 | Silver: 0
 VIP 19 ($15000-25000|2%): Gold: 0.06/0.13/0.04 | Oil: 0.12/0.26/0.08 | Silver: 0.02/0.13/0.03 | BTC: 0.22/0.36/0.15 | ETH: 5.29/8.82/3.53
 VIP 20 ($25000-35000|2%): Gold: 0.06/0.15/0.05 | Oil: 0.12/0.30/0.10 | Silver: 0.03/0.22/0.05 | BTC: 0.37/0.61/0.24 | ETH: 8.82/14.70/5.88
 VIP 21 ($35k-50k|2%), VIP 22 ($50k-75k|2%), VIP 23 ($75k-100k|2%), VIP 24 ($100k-150k|1.5%), VIP 25 ($150k-200k|1.5%), VIP 26 ($200k-300k|1.25%), VIP 27 ($300k-500k|1%), VIP 28 ($500k-1M|1%).
-"""
-
-बातचीत के मुख्य नियम:
-1. यूज़र बैलेंस बताए: VIP टियर, फिक्स्ड रिस्क % और डॉलर रिस्क बजट बताएं। फिर पूछें कि कौन से पेयर (Gold, Oil, Silver, BTC, ETH) पर ट्रेड करना चाहते हैं।
-2. यूज़र पेयर बताए: L1 (31%), L2 (48%), L3 (65%) के सटीक लॉट, कुल लॉट और VIP अपग्रेड की तुलना दें।
-3. कोई सवाल पूछे: बिना रूल नंबर बोले सीधा सटीक और पक्का टेक्निकल समाधान दें।
 """
 
 def ask_gemini(messages_history: list) -> str:
@@ -101,21 +95,20 @@ def ask_gemini(messages_history: list) -> str:
         return f"Error: {str(e)}"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # यूज़र की पुरानी हिस्ट्री और भाषा रीसेट करना
     context.user_data["history"] = []
     context.user_data["lang"] = "hi"
 
     keyboard = [
         [
-            InlineKeyboardButton("🇮🇳 हिन्दी (Hindi)", callback_data="lang_hi"),
-            InlineKeyboardButton("🇬🇧 English", callback_data="lang_en"),
+            InlineKeyboardButton("हिन्दी (Hindi)", callback_data="lang_hi"),
+            InlineKeyboardButton("English", callback_data="lang_en"),
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     welcome_text = (
-        "नमस्ते / Welcome to **MD Istiak Trader Support**!\n\n"
-        "कृपया अपनी पसंदीदा भाषा चुनें / Please select your preferred language:"
+        "नमस्ते / Welcome to MD Istiak Trader Support!\n\n"
+        "कृपया अपनी भाषा चुनें / Please select your preferred language:"
     )
     await update.message.reply_text(welcome_text, reply_markup=reply_markup)
 
@@ -126,14 +119,14 @@ async def set_language(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if query.data == "lang_hi":
         context.user_data["lang"] = "hi"
         msg = (
-            "नमस्ते भाई! मैं **Gold Master Multi-Asset EA** का आधिकारिक सपोर्टर हूँ। 🙏\n\n"
-            "कृपया अपना **खाता बैलेंस (USD में)** बताइए, ताकि मैं आपका सही VIP टियर, रिस्क बजट और लॉट साइज़ निकाल सकूँ।"
+            "नमस्ते भाई! मैं Gold Master Multi-Asset EA का सपोर्टर हूँ।\n\n"
+            "कृपया अपना ट्रेडिंग बैलेंस (USD में) बताइए।"
         )
     else:
         context.user_data["lang"] = "en"
         msg = (
-            "Welcome! I am the official **Gold Master Multi-Asset EA** support assistant. 🤝\n\n"
-            "Please share your **account balance (in USD)** so I can determine your exact VIP tier, risk budget, and lot sizes."
+            "Welcome! I am the official Gold Master Multi-Asset EA assistant.\n\n"
+            "Please share your account balance (in USD)."
         )
 
     await query.edit_message_text(msg)
@@ -142,23 +135,20 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text
     user_lang = context.user_data.get("lang", "hi")
 
-    # चैट हिस्ट्री निकालना ताकि पिछली बातें याद रहें
-    history = context.user_data.get("history", [])
+    if "history" not in context.user_data:
+        context.user_data["history"] = []
+    history = context.user_data["history"]
 
-    current_system_prompt = f"{SYSTEM_INSTRUCTION}\nयूजर की चुनी गई भाषा: '{user_lang}'"
+    current_system_prompt = f"{SYSTEM_INSTRUCTION}\nUser Language: '{user_lang}'"
     messages = [{"role": "system", "content": current_system_prompt}]
 
-    # पुरानी बातचीत जोड़ना
     for h in history:
         messages.append(h)
 
-    # नया संदेश जोड़ना
     messages.append({"role": "user", "content": user_text})
 
-    # AI से जवाब लेना
     bot_reply = ask_gemini(messages)
 
-    # मेमोरी में चैट सेव रखना (पिछली 6 बातचीत याद रखेगा)
     history.append({"role": "user", "content": user_text})
     history.append({"role": "assistant", "content": bot_reply})
     if len(history) > 6:
