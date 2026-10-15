@@ -179,26 +179,28 @@ Rule 100: Master Rule 100 (Real Edge vs Holy Grail): Edge is risk management & d
 """
 def ask_gemini(prompt: str) -> str:
     key = os.environ.get("GEMINI_KEY", "").strip()
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+    if not key:
+        return "Error: API key is not set in Environment."
+    
+    url = "https://api.groq.com/openai/v1/chat/completions"
     headers = {
-        "Content-Type": "application/json",
-        "x-goog-api-key": key
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json"
     }
     payload = {
-        "contents": [
-            {
-                "role": "user",
-                "parts": [{"text": f"System Instructions:\n{SYSTEM_INSTRUCTION}\n\nUser Question:\n{prompt}"}]
-            }
+        "model": "llama-3.1-8b-instant",
+        "messages": [
+            {"role": "system", "content": SYSTEM_INSTRUCTION},
+            {"role": "user", "content": prompt}
         ]
     }
     try:
         response = requests.post(url, headers=headers, json=payload)
         data = response.json()
         if response.status_code == 200:
-            return data["candidates"][0]["content"]["parts"][0]["text"]
+            return data["choices"][0]["message"]["content"]
         else:
-            return f"API Error: {data.get('error', {}).get('message', str(data))}"
+            return f"Error: {data.get('error', {}).get('message', str(data))}"
     except Exception as e:
         return f"Error: {str(e)}"
 
